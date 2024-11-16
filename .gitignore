@@ -14,8 +14,8 @@
 /coverage
 
 # next.js
-/.next/
-/out/
+/app/.next/
+/app/out/
 
 # production
 /build
@@ -38,3 +38,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+infra/.terraform.lock.hcl
+infra/.terraform/providers/registry.terraform.io/hashicorp/aws/4.67.0/darwin_arm64/terraform-provider-aws_v4.67.0_x5
+infra/terraform.tfstate.backup
+infra/terraform.tfstate
+
+node_modules
+npm-debug.log
+docker
+.git
+*.tfstate*
