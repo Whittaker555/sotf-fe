@@ -213,7 +213,26 @@ resource "aws_security_group" "service_security_group" {
   }
 }
 
-output "lb_dns" {
-  value       = aws_alb.application_load_balancer.dns_name
-  description = "AWS load balancer DNS Name"
+resource "aws_secretsmanager_secret" "spotify_secrets" {
+  name = "sotf-fe"
+}
+
+// allow ECS task to access the secret
+resource "aws_secretsmanager_secret_policy" "spotify_secrets_policy" {
+  secret_arn = aws_secretsmanager_secret.spotify_secrets.arn
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          AWS = aws_iam_role.ecsTaskExecutionRole.arn
+        },
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
 }
