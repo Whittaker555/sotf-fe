@@ -8,8 +8,8 @@ const options: NextAuthOptions = {
         SpotifyProvider({
             authorization:
                 'https://accounts.spotify.com/authorize?scope=user-read-email,playlist-read-private,playlist-modify-private,playlist-modify-public',
-            clientId: process.env.SPOTIFY_CLIENT_ID || await getSecretValue('SPOTIFY_CLIENT_ID'),
-            clientSecret: process.env.SPOTIFY_CLIENT_SECRET || await getSecretValue('SPOTIFY_CLIENT_SECRET'),
+            clientId: await getSecretValue('SPOTIFY_CLIENT_ID'),
+            clientSecret: await getSecretValue('SPOTIFY_CLIENT_SECRET'),
         }),
     ],
     callbacks: {
@@ -26,7 +26,7 @@ const options: NextAuthOptions = {
             };
         },
     },
-    secret: process.env.NEXTAUTH_SECRET || await getSecretValue('NEXTAUTH_SECRET'),
+    secret: await getSecretValue('NEXTAUTH_SECRET'),
 }
 
 
