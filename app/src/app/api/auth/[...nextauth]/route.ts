@@ -25,7 +25,7 @@ const options: NextAuthOptions = {
             };
         },
     },
-    secret: await process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET,
 }
 
 
