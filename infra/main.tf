@@ -85,20 +85,20 @@ resource "aws_ecs_task_definition" "sotf-fe-task" {
       ]
       memory = 512
       cpu    = 256
-      secrets = {
-        SPOTIFY_CLIENT_ID = {
-          name = "SPOTIFY_CLIENT_ID"
-          valueFrom = "${aws_secretsmanager_secret.spotify_secrets.arn}"
+      secrets = [
+        {
+          name      = "SPOTIFY_CLIENT_ID"
+          valueFrom = "${aws_secretsmanager_secret.spotify_secrets.arn}:SPOTIFY_CLIENT_ID"
+        },
+        {
+          name      = "SPOTIFY_CLIENT_SECRET"
+          valueFrom = "${aws_secretsmanager_secret.spotify_secrets.arn}:SPOTIFY_CLIENT_SECRET" 
+        },
+        {
+          name      = "NEXTAUTH_SECRET"
+          valueFrom = "${aws_secretsmanager_secret.spotify_secrets.arn}:NEXTAUTH_SECRET"
         }
-        SPOTIFY_CLIENT_SECRET = {
-          name = "SPOTIFY_CLIENT_SECRET"
-          valueFrom = "${aws_secretsmanager_secret.spotify_secrets.arn}"
-        }
-        NEXTAUTH_SECRET = {
-          name = "NEXTAUTH_SECRET"
-          valueFrom = "${aws_secretsmanager_secret.spotify_secrets.arn}"
-        }
-      }
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
