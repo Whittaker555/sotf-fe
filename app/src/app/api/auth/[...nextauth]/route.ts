@@ -1,18 +1,14 @@
 import NextAuth from "next-auth/next";
 import { type NextAuthOptions } from "next-auth";
 import SpotifyProvider from 'next-auth/providers/spotify';
-import { getSecretValue } from "@/app/secrets/secrets";
 
-const secrets = await getSecretValue('sotf-fe');
-
-console.log(secrets.NEXTAUTH_SECRET);
 const options: NextAuthOptions = {
     providers: [
         SpotifyProvider({
             authorization:
                 'https://accounts.spotify.com/authorize?scope=user-read-email,playlist-read-private,playlist-modify-private,playlist-modify-public',
-            clientId: secrets.SPOTIFY_CLIENT_ID,
-            clientSecret: secrets.SPOTIFY_CLIENT_SECRET,
+            clientId: process.env.SPOTIFY_CLIENT_ID!,
+            clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
         }),
     ],
     callbacks: {
@@ -29,7 +25,7 @@ const options: NextAuthOptions = {
             };
         },
     },
-    secret: await secrets.NEXTAUTH_SECRET,
+    secret: await process.env.SECRET,
 }
 
 

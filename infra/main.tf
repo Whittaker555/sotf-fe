@@ -72,31 +72,43 @@ resource "aws_cloudwatch_log_group" "sotf-log-group" {
 # ECS Task Definition
 resource "aws_ecs_task_definition" "sotf-fe-task" {
   family                   = "sotf-fe-task" # Name your task
-  container_definitions    = <<DEFINITION
-  [
+  container_definitions    = jsonencode([
     {
-      "name": "sotf-fe-task",
-      "image": "${aws_ecr_repository.sotf-fe-ecr-repo.repository_url}",
-      "essential": true,
-      "portMappings": [
+      name      = "sotf-fe-task"
+      image     = "${aws_ecr_repository.sotf-fe-ecr-repo.repository_url}"
+      essential = true
+      portMappings = [
         {
-          "containerPort": 3000,
-          "hostPort": 3000
+          containerPort = 3000
+          hostPort      = 3000
         }
-      ],
-      "memory": 512,
-      "cpu": 256,
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "${aws_cloudwatch_log_group.sotf-log-group.name}",
-          "awslogs-region": "eu-west-2",
-          "awslogs-stream-prefix": "ecs"
+      ]
+      memory = 512
+      cpu    = 256
+      secrets = {
+        SPOTIFY_CLIENT_ID = {
+          name = "SPOTIFY_CLIENT_ID"
+          valueFrom = "${aws_secretsmanager_secret.spotify_secrets.arn}"
+        }
+        SPOTIFY_CLIENT_SECRET = {
+          name = "SPOTIFY_CLIENT_SECRET"
+          valueFrom = "${aws_secretsmanager_secret.spotify_secrets.arn}"
+        }
+        NEXTAUTH_SECRET = {
+          name = "NEXTAUTH_SECRET"
+          valueFrom = "${aws_secretsmanager_secret.spotify_secrets.arn}"
+        }
+      }
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "${aws_cloudwatch_log_group.sotf-log-group.name}"
+          awslogs-region        = "eu-west-2"
+          awslogs-stream-prefix = "ecs"
         }
       }
     }
-  ]
-  DEFINITION
+  ])
   requires_compatibilities = ["FARGATE"] # use Fargate as the launch type
   network_mode             = "awsvpc"    # add the AWS VPN network mode as this is required for Fargate
   memory                   = 512         # Specify the memory the container requires
